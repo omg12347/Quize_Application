@@ -1,54 +1,37 @@
-# Daily Task Scheduler
+# Quiz Application
 
-Daily Task Scheduler is a simple command-line application that helps you manage your daily tasks efficiently. With this task scheduler, you can create, update, and delete tasks, set due dates, and receive daily reminders of tasks that are due on the current day.
+This is a simple command-line Python quiz application that allows users to register, login, create quizzes, take quizzes, and display the results. The application is designed to be user-friendly and interactive.
 
 ## Features
 
-- User Registration: Create a new account to start managing your tasks.
-- User Login: Existing users can log in to access their task lists.
-- Add Task: Easily add new tasks with a title, description, and due date.
-- Delete Task: Remove completed or unnecessary tasks from your list.
-- Update Task: Modify task details or change the due date of existing tasks.
-- View Tasks: Display a list of all tasks associated with your account.
-- Task Reminder: Get daily reminders of tasks due on the current day.
-- User Logout: Securely log out of your account to protect your tasks.
+- User Registration: New users can register with a username and password to create an account.
+- User Login: Registered users can log in with their credentials.
+- Quiz Creation: Logged-in users can create quizzes by adding questions with multiple-choice options and specifying the correct answer.
+- Quiz Taking: Users can choose from available quizzes and take them, answering questions and receiving instant feedback on their answers.
+- Quiz Results: After completing a quiz, users will receive their total score.
 
 ## How to Use
 
-1. **Register**: Start by registering your account. Choose a unique username and a strong password. If you already have an account, you can skip this step.
+1. Run the `quiz_app.py` script using Python (e.g., `python quiz_app.py`).
+2. Choose from the available options:
+   - Register a new account (Option 1) or login (Option 2).
+   - Create a quiz (Option 3) if logged in as a registered user.
+   - Take a quiz (Option 4) from the available quizzes if logged in.
+   - Exit the application (Option 5).
+3. If you choose to create a quiz, provide the quiz name and add questions along with multiple-choice options. Indicate the correct option number for each question.
+4. If you choose to take a quiz, select a quiz from the list and proceed with answering the questions.
 
-2. **Login**: If you are a registered user, log in using your credentials to access your tasks.
+## Note
 
-3. **Main Menu**: After logging in, you will be directed to the main menu. From here, you can choose various actions to manage your tasks effectively.
+- The application does not store data permanently. All user accounts and quizzes are stored in memory during the runtime of the program.
+- User accounts are case-sensitive, and passwords are stored securely using hashing techniques.
 
-4. **Add Task**: Select option "1" to add a new task. Enter the title, description, and due date (in the format YYYY-MM-DD) for the new task.
+## Requirements
 
-5. **Delete Task**: To remove a task from your list, choose option "2". You will see a list of all your tasks with numbers. Enter the number corresponding to the task you want to delete.
+- Python 3.x
 
-6. **Update Task**: Select option "3" to update an existing task. Enter the task number you want to update and provide the new title, description, and due date (in the format YYYY-MM-DD) for the task.
+## Author
 
-7. **View Tasks**: To view all your tasks, select option "4". The tasks will be displayed with their titles and due dates.
+This quiz application was created by [Your Name].
 
-8. **Task Reminder**: Choose option "5" to get reminders for tasks that are due today. The application will show you the tasks with their titles and due dates.
-
-9. **Logout**: When you are done managing your tasks, select option "6" to securely log out of your account.
-
-## Dependencies
-
-This project uses Python and requires no external libraries apart from those provided in the standard Python library. The project uses `hashlib` for password hashing and `datetime` for managing task due dates.
-
-## Installation
-
-1. Clone the repository or download the source code.
-2. Make sure you have Python installed on your system (Python 3.6 or higher is recommended).
-3. Run the `task_scheduler.py` script using the following command:
-
-```bash
-python task_scheduler.py
-```
-
-## Feedback and Contributions
-
-Your feedback and contributions are highly appreciated. If you encounter any issues, have suggestions, or want to contribute to the project, feel free to create a pull request or open an issue on GitHub.
-
-Let Daily Task Scheduler help you stay organized and on top of your daily tasks! Happy task scheduling! 😊
+Feel free to explore, modify, and enhance this quiz application according to your requirements. Happy quizzing!

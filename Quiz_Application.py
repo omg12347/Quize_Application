@@ -1,220 +1,152 @@
-import hashlib
-import os
-import json
-import datetime
-
+import random
 
 class User:
     def __init__(self, username, password):
         self.username = username
-        self.password_hash = hashlib.sha256(password.encode()).hexdigest()
-        self.tasks = []
+        self.password = password
 
-    def add_task(self, task):
-        self.tasks.append(task)
+class Question:
+    def __init__(self, question, options, correct_answer):
+        self.question = question
+        self.options = options
+        self.correct_answer = correct_answer
 
-    def delete_task(self, task_index):
-        if 0 <= task_index < len(self.tasks):
-            del self.tasks[task_index]
+class Quiz:
+    def __init__(self, quiz_name):
+        self.quiz_name = quiz_name
+        self.questions = []
 
-    def update_task(self, task_index, updated_task):
-        if 0 <= task_index < len(self.tasks):
-            self.tasks[task_index] = updated_task
+    def add_question(self, question, options, correct_answer):
+        self.questions.append(Question(question, options, correct_answer))
 
+    def take_quiz(self):
+        score = 0
+        random.shuffle(self.questions)
+        for idx, question in enumerate(self.questions, start=1):
+            print(f"\nQuestion {idx}: {question.question}")
+            for i, option in enumerate(question.options, start=1):
+                print(f"{i}. {option}")
 
-class Task:
-    def __init__(self, title, description, due_date):
-        self.title = title
-        self.description = description
-        self.due_date = due_date
+            while True:
+                try:
+                    user_answer = int(input("Enter the option number of your answer: "))
+                    if 1 <= user_answer <= len(question.options):
+                        break
+                    else:
+                        print("Invalid option number. Please try again.")
+                except ValueError:
+                    print("Invalid input. Please enter a valid option number.")
 
+            if question.options[user_answer - 1] == question.correct_answer:
+                print("Correct!")
+                score += 1
+            else:
+                print("Incorrect!")
 
-def clear_screen():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-
-def save_users(users):
-    with open('users.json', 'w') as f:
-        json.dump(users, f, indent=2)
-
-
-def load_users():
-    if os.path.exists('users.json'):
-        with open('users.json', 'r') as f:
-            return json.load(f)
-    else:
-        return {}
-
+        total_questions = len(self.questions)
+        print(f"\nYour Score: {score}/{total_questions}")
 
 def register():
-    while True:
-        username = input("Enter a username: ")
-        password = input("Enter a password: ")
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+    return User(username, password)
 
-        if username and password:
-            users = load_users()
-            if username in users:
-                print("Username already exists. Try a different one.")
-            else:
-                user = User(username, password)
-                users[username] = {
-                    "password_hash": user.password_hash,
-                    "tasks": []
-                }
-                save_users(users)
-                print("Registration successful.")
-                break
-        else:
-            print("Please enter a valid username and password.")
+def login(users):
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+    return users.get(username, None) if users else None
 
-
-def login():
-    while True:
-        username = input("Enter your username: ")
-        password = input("Enter your password: ")
-
-        if username and password:
-            users = load_users()
-            if username in users and users[username]["password_hash"] == hashlib.sha256(password.encode()).hexdigest():
-                user = User(username, password)
-                user.tasks = [Task(**task) for task in users[username]["tasks"]]
-                print(f"Welcome back, {username}!")
-                return user
-            else:
-                print("Invalid username or password. Please try again.")
-        else:
-            print("Please enter a valid username and password.")
-
-
-def add_task(user):
-    title = input("Enter task title: ")
-    description = input("Enter task description: ")
-    due_date = input("Enter due date (YYYY-MM-DD): ")
-
-    try:
-        due_date = datetime.datetime.strptime(due_date, "%Y-%m-%d")
-    except ValueError:
-        print("Invalid date format. Please use YYYY-MM-DD.")
-        return
-
-    task = Task(title, description, due_date)
-    user.add_task(task)
-    save_users(users)
-
-
-def delete_task(user):
-    if not user.tasks:
-        print("No tasks found.")
-        return
-
-    for index, task in enumerate(user.tasks):
-        print(f"{index + 1}. {task.title} (Due: {task.due_date})")
-
-    task_index = int(input("Enter the task number to delete: ")) - 1
-    if 0 <= task_index < len(user.tasks):
-        user.delete_task(task_index)
-        save_users(users)
-        print("Task deleted successfully.")
-    else:
-        print("Invalid task number.")
-
-
-def update_task(user):
-    if not user.tasks:
-        print("No tasks found.")
-        return
-
-    for index, task in enumerate(user.tasks):
-        print(f"{index + 1}. {task.title} (Due: {task.due_date})")
-
-    task_index = int(input("Enter the task number to update: ")) - 1
-    if 0 <= task_index < len(user.tasks):
-        title = input("Enter updated task title: ")
-        description = input("Enter updated task description: ")
-        due_date = input("Enter updated due date (YYYY-MM-DD): ")
-
-        try:
-            due_date = datetime.datetime.strptime(due_date, "%Y-%m-%d")
-        except ValueError:
-            print("Invalid date format. Please use YYYY-MM-DD.")
-            return
-
-        updated_task = Task(title, description, due_date)
-        user.update_task(task_index, updated_task)
-        save_users(users)
-        print("Task updated successfully.")
-    else:
-        print("Invalid task number.")
-
-
-def display_tasks(user):
-    if not user.tasks:
-        print("No tasks found.")
-        return
-
-    print("Your Task List:")
-    for index, task in enumerate(user.tasks, start=1):
-        print(f"{index}. {task.title} (Due: {task.due_date})")
-
-
-def task_reminder(user):
-    today = datetime.datetime.now().date()
-    reminder_tasks = [task for task in user.tasks if task.due_date.date() == today]
-
-    if not reminder_tasks:
-        print("No tasks due today.")
-        return
-
-    print("🔔 Today's Task Reminder 🔔")
-    for task in reminder_tasks:
-        print(f"Task: {task.title} (Due: {task.due_date})")
-
-
-if __name__ == "__main__":
-    users = load_users()
+def create_quiz():
+    quiz_name = input("Enter the quiz name: ")
+    quiz = Quiz(quiz_name)
 
     while True:
-        clear_screen()
+        question = input("Enter the question (or type 'done' to finish): ")
+        if question.lower() == 'done':
+            break
 
-        print("Welcome to Daily Task Scheduler!")
+        options = []
+        for i in range(4):
+            option = input(f"Enter option {i+1}: ")
+            options.append(option)
+
+        correct_answer = input("Enter the correct option number (1-4): ")
+        quiz.add_question(question, options, options[int(correct_answer) - 1])
+
+    return quiz
+
+def main():
+    users = {}
+    quizzes = []
+
+    while True:
+        print("\n--- Quiz Application ---")
         print("1. Register")
         print("2. Login")
-        print("3. Exit")
+        print("3. Create Quiz")
+        print("4. Take Quiz")
+        print("5. Exit")
 
         choice = input("Enter your choice: ")
 
         if choice == "1":
-            register()
+            user = register()
+            users[user.username] = user
+            print("Registration successful!")
+
         elif choice == "2":
-            user = login()
-            while user:
-                clear_screen()
-                print("Welcome to Daily Task Scheduler!")
-                print("1. Add Task")
-                print("2. Delete Task")
-                print("3. Update Task")
-                print("4. View Tasks")
-                print("5. Task Reminder")
-                print("6. Logout")
+            user = login(users)
+            if user:
+                print(f"Welcome, {user.username}!")
+            else:
+                print("Invalid username or password. Please try again.")
 
-                choice = input("Enter your choice: ")
-
-                if choice == "1":
-                    add_task(user)
-                elif choice == "2":
-                    delete_task(user)
-                elif choice == "3":
-                    update_task(user)
-                elif choice == "4":
-                    display_tasks(user)
-                elif choice == "5":
-                    task_reminder(user)
-                elif choice == "6":
-                    break
-                else:
-                    print("Invalid choice. Please try again.")
         elif choice == "3":
-            print("Thank you for using Daily Task Scheduler. Goodbye!")
+            if users:
+                if user:
+                    quiz = create_quiz()
+                    quizzes.append(quiz)
+                    print(f"Quiz '{quiz.quiz_name}' created successfully!")
+                else:
+                    print("Please log in to create a quiz.")
+            else:
+                print("Please register first to create a quiz.")
+
+        elif choice == "4":
+            if users and quizzes:
+                if user:
+                    print("\nAvailable Quizzes:")
+                    for idx, quiz in enumerate(quizzes, start=1):
+                        print(f"{idx}. {quiz.quiz_name}")
+
+                    while True:
+                        try:
+                            quiz_choice = int(input("Enter the quiz number to take: "))
+                            if 1 <= quiz_choice <= len(quizzes):
+                                break
+                            else:
+                                print("Invalid quiz number. Please try again.")
+                        except ValueError:
+                            print("Invalid input. Please enter a valid quiz number.")
+
+                    selected_quiz = quizzes[quiz_choice - 1]
+                    print(f"\nYou are about to take the quiz '{selected_quiz.quiz_name}'.")
+                    take_quiz = input("Do you want to continue? (yes/no): ")
+                    if take_quiz.lower() == 'yes':
+                        selected_quiz.take_quiz()
+                    else:
+                        print("Quiz taking cancelled.")
+                else:
+                    print("Please log in to take a quiz.")
+            else:
+                print("No quizzes available. Please create a quiz first.")
+
+        elif choice == "5":
+            print("Exiting the Quiz Application...")
             break
+
         else:
             print("Invalid choice. Please try again.")
+
+if __name__ == "__main__":
+    main()

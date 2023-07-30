@@ -2,6 +2,15 @@
 
 This is a simple command-line Python quiz application that allows users to register, login, create quizzes, take quizzes, and display the results. The application is designed to be user-friendly and interactive.
 
+## Demo Video
+
+
+
+https://github.com/omg12347/Quize_Application/assets/97293861/f22952f2-ace6-499a-a638-5ce5f0b7c1d2
+
+
+
+
 ## Features
 
 - User Registration: New users can register with a username and password to create an account.

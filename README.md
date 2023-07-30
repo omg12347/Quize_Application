@@ -1,7 +1,5 @@
 # Daily Task Scheduler
 
-![Daily Task Scheduler](task_scheduler.png)
-
 Daily Task Scheduler is a simple command-line application that helps you manage your daily tasks efficiently. With this task scheduler, you can create, update, and delete tasks, set due dates, and receive daily reminders of tasks that are due on the current day.
 
 ## Features
